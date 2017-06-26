@@ -25,7 +25,7 @@ DME_REPO     = https://github.com/olsonanl/dme.git
 PATH := $(DEPLOY_RUNTIME)/build-tools/bin:$(PATH)
 
 ifdef DEPLOYMENT_VAR_DIR
-SERVICE_LOGDIR = $(DEPLOYMENT_VAR_DIR)/services/$(SERVICE)
+SERVICE_LOGDIR = $(DEPLOYMENT_VAR_DIR)/services/$(SERVICE_NAME)
 TPAGE_SERVICE_LOGDIR = --define kb_service_log_dir=$(SERVICE_LOGDIR)
 endif
 
@@ -154,12 +154,12 @@ build-config:
 
 deploy-run-scripts:
 	for script in start_service stop_service postinstall; do \
-		$(TPAGE) $(TPAGE_ARGS) service/$$script.tt > $(TARGET)/services/$(SERVICE)/$$script ; \
-		chmod +x $(TARGET)/services/$(SERVICE)/$$script ; \
+		$(TPAGE) $(TPAGE_ARGS) service/$$script.tt > $(TARGET)/services/$(SERVICE_NAME)/$$script ; \
+		chmod +x $(TARGET)/services/$(SERVICE_NAME)/$$script ; \
 	done
 	mkdir -p $(TARGET)/postinstall
-	rm -f $(TARGET)/postinstall/$(SERVICE)
-	ln -s ../services/$(SERVICE)/postinstall $(TARGET)/postinstall/$(SERVICE)
+	rm -f $(TARGET)/postinstall/$(SERVICE_NAME)
+	ln -s ../services/$(SERVICE_NAME)/postinstall $(TARGET)/postinstall/$(SERVICE_NAME)
 
 
 deploy-upstart: deploy-service
