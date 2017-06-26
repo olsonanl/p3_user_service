@@ -14,7 +14,7 @@ SERVICE_APP_DIR      = $(TARGET)/services/$(SERVICE_DIR)/app
 APP_REPO     = https://github.com/olsonanl/p3_user.git
 #APP_REPO     = https://github.com/PATRIC3/p3_user.git
 APP_DIR      = p3_user
-APP_SCRIPT   = ./bin/p3user-server
+APP_SCRIPT   = ./bin/p3-user
 
 #
 # For now we use a fork of dme.
@@ -57,6 +57,14 @@ COOKIE_SECRET = patric3
 COOKIE_KEY = patric3
 COOKIE_DOMAIN = $(shell echo $(SERVICE_HOSTNAME) | sed -e 's/^[^.][^.]*\././') 
 
+EMAIL_LOCAL_SENDMAIL = true
+EMAIL_DEFAULT_FROM = "PATRIC <do-not-reply@patricbrc.org>"
+EMAIL_DEFAULT_SENDER = "PATRIC <do-not-reply@patricbrc.org>"
+EMAIL_HOST = 
+EMAIL_PORT = 25
+EMAIL_USERNAME =
+EMAIL_PASSWORD =
+
 SERVICE_PSGI = $(SERVICE_NAME).psgi
 TPAGE_ARGS = --define kb_runas_user=$(SERVICE_USER) \
 	--define kb_top=$(TARGET) \
@@ -92,6 +100,13 @@ TPAGE_ARGS = --define kb_runas_user=$(SERVICE_USER) \
 	--define cookie_key=$(COOKIE_KEY) \
 	--define cookie_secret=$(COOKIE_SECRET) \
 	--define cookie_domain=$(COOKIE_DOMAIN) \
+	--define email_local_sendmail=$(EMAIL_LOCAL_SENDMAIL) \
+	--define email_default_from=$(EMAIL_DEFAULT_FROM) \
+	--define email_default_sender=$(EMAIL_DEFAULT_SENDER) \
+	--define email_host=$(EMAIL_HOST) \
+	--define email_port=$(EMAIL_PORT) \
+	--define email_username=$(EMAIL_USERNAME) \
+	--define email_password=$(EMAIL_PASSWORD) \
 	$(TPAGE_SERVICE_LOGDIR)
 
 # to wrap scripts and deploy them to $(TARGET)/bin using tools in
@@ -148,7 +163,7 @@ deploy-service: deploy-run-scripts deploy-app deploy-config
 
 deploy-app: build-app
 	-mkdir -p $(SERVICE_APP_DIR)
-	rsync --exclude .git --delete -arv $(APP_DIR)/. $(SERVICE_APP_DIR)
+	rsync --exclude .git --delete -ar $(APP_DIR)/. $(SERVICE_APP_DIR)
 
 deploy-config: build-config
 	$(TPAGE) $(TPAGE_ARGS) $(CONFIG_TEMPLATE) > $(SERVICE_APP_DIR)/$(CONFIG)
