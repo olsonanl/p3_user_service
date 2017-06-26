@@ -18,12 +18,14 @@
     "patric3_webapp_callbackURL": "[% p3_callback_url %]", 
     "production": [% p3user_production %], 
     "redis": {
-        "db": "[% redis_db %]", 
+        "db": [% redis_db %], 
         "host": "[% redis_host %]", 
         "pass": "[% redis_pass %]", 
         "port": [% redis_port %], 
         "prefix": ""
     }, 
     "signingSubjectURL": "[% p3user_signing_subject_url %]", 
+    "signing_PEM": "[% p3user_signing_private_pem %]",
+    "signing_public_PEM": "[% p3user_signing_public_pem %]",
     "siteURL": "[% p3_user_url %]"
 }
