@@ -131,7 +131,7 @@ dme/package.json:
 
 build-primary.tag:
 	export PATH=$$KB_RUNTIME/build-tools/bin:$$PATH LD_LIBRARY_PATH=$$KB_RUNTIME/build-tools/lib64 ; \
-	(cd $(APP_DIR); npm install; cd public; rm -f js; ln -s ../../../p3_web_service/p3_web/public/js .) && touch build-primary.tag
+	(cd $(APP_DIR); npm install; cd public; rm -f js; ln -s ../../../p3_web_service/app/public/js .) && touch build-primary.tag
 
 build-forever.tag:
 	export PATH=$$KB_RUNTIME/build-tools/bin:$$PATH LD_LIBRARY_PATH=$$KB_RUNTIME/build-tools/lib64 ; \
