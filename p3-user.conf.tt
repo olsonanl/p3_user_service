@@ -12,11 +12,11 @@
     }, 
     "http_port": [% kb_service_port %], 
     "mongo": {
-        "url": "[% p3user_mongo_url %]"
+        "url": "[% p3_user_mongo_url %]"
     }, 
     "p3Home": "[% p3_site_url %]", 
     "patric3_webapp_callbackURL": "[% p3_callback_url %]", 
-    "production": [% p3user_production %], 
+    "production": [% p3_user_production %], 
     "redis": {
         "db": [% redis_db %], 
         "host": "[% redis_host %]", 
@@ -24,8 +24,8 @@
         "port": [% redis_port %], 
         "prefix": ""
     }, 
-    "signingSubjectURL": "[% p3user_signing_subject_url %]", 
-    "signing_PEM": "[% p3user_signing_private_pem %]",
-    "signing_public_PEM": "[% p3user_signing_public_pem %]",
+    "signingSubjectURL": "[% p3_user_signing_subject_url %]", 
+    "signing_PEM": "[% p3_user_signing_private_pem %]",
+    "signing_public_PEM": "[% p3_user_signing_public_pem %]",
     "siteURL": "[% p3_user_url %]"
 }
