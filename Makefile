@@ -125,6 +125,7 @@ build-app: $(APP_DIR)/package.json dme/package.json build-primary.tag build-fore
 
 $(APP_DIR)/package.json:
 	git clone $(APP_TAG) --recursive $(APP_REPO) $(APP_DIR); 
+	ln -s $(APP_DIR) app
 
 dme/package.json:
 	git clone --recursive $(DME_REPO) dme; \
