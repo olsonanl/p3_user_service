@@ -16,7 +16,7 @@
     }, 
     "p3Home": "[% p3_site_url %]", 
     "patric3_webapp_callbackURL": "[% p3_callback_url %]", 
-    "production": [% p3_production %], 
+    "production": [% p3user_production %], 
     "redis": {
         "db": "[% redis_db %]", 
         "host": "[% redis_host %]", 
