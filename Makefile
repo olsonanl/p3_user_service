@@ -105,18 +105,22 @@ SRC_PERL = $(wildcard scripts/*.pl)
 
 default: build-app build-config
 
-build-app:
-	if [ ! -f $(APP_DIR)/package.json ] ; then \
-		git clone --recursive $(APP_REPO) $(APP_DIR); \
-	fi
-	if [ ! -f dme/package.json ] ; then \
-		git clone --recursive $(DME_REPO) dme; \
-	fi
-	cd $(APP_DIR); \
-		export PATH=$$KB_RUNTIME/build-tools/bin:$$PATH LD_LIBRARY_PATH=$$KB_RUNTIME/build-tools/lib64 ; \
-		npm install; \
-		npm install forever
-	cd $(APP_DIR)/public; rm -f js; ln -s ../../../p3_web_service/p3_web/public/js .
+
+build-app: $(APP_DIR)/package.json dme/package.json build-primary.tag build-forever.tag 
+
+$(APP_DIR)/package.json:
+	git clone $(APP_TAG) --recursive $(APP_REPO) $(APP_DIR); 
+
+dme/package.json:
+	git clone --recursive $(DME_REPO) dme; \
+
+build-primary.tag:
+	export PATH=$$KB_RUNTIME/build-tools/bin:$$PATH LD_LIBRARY_PATH=$$KB_RUNTIME/build-tools/lib64 ; \
+	(cd $(APP_DIR); npm install; cd public; rm -f js; ln -s ../../../p3_web_service/p3_web/public/js .) && touch build-primary.tag
+
+build-forever.tag:
+	export PATH=$$KB_RUNTIME/build-tools/bin:$$PATH LD_LIBRARY_PATH=$$KB_RUNTIME/build-tools/lib64 ; \
+	(cd $(APP_DIR); npm install forever) && touch build-forever.tag
 
 dist: 
 
@@ -153,6 +157,7 @@ build-config:
 	$(TPAGE) $(TPAGE_ARGS) $(CONFIG_TEMPLATE) > $(APP_DIR)/$(CONFIG)
 
 deploy-run-scripts:
+	mkdir -p $(TARGET)/services/$(SERVICE_DIR)
 	for script in start_service stop_service postinstall; do \
 		$(TPAGE) $(TPAGE_ARGS) service/$$script.tt > $(TARGET)/services/$(SERVICE_NAME)/$$script ; \
 		chmod +x $(TARGET)/services/$(SERVICE_NAME)/$$script ; \
