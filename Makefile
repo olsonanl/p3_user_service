@@ -24,6 +24,11 @@ DME_REPO     = https://github.com/olsonanl/dme.git
 
 PATH := $(DEPLOY_RUNTIME)/build-tools/bin:$(PATH)
 
+ifdef DEPLOYMENT_VAR_DIR
+SERVICE_LOGDIR = $(DEPLOYMENT_VAR_DIR)/services/$(SERVICE)
+TPAGE_SERVICE_LOGDIR = --define kb_service_log_dir=$(SERVICE_LOGDIR)
+endif
+
 CONFIG          = p3-user.conf
 CONFIG_TEMPLATE = $(CONFIG).tt
 
@@ -86,7 +91,8 @@ TPAGE_ARGS = --define kb_runas_user=$(SERVICE_USER) \
 	--define redis_pass=$(REDIS_PASS) \
 	--define cookie_key=$(COOKIE_KEY) \
 	--define cookie_secret=$(COOKIE_SECRET) \
-	--define cookie_domain=$(COOKIE_DOMAIN)
+	--define cookie_domain=$(COOKIE_DOMAIN) \
+	$(TPAGE_SERVICE_LOGDIR)
 
 # to wrap scripts and deploy them to $(TARGET)/bin using tools in
 # the dev_container. right now, these vars are defined in
@@ -137,8 +143,8 @@ deploy-scripts:
 deploy-service: deploy-run-scripts deploy-app deploy-config
 
 deploy-app: build-app
-	-mkdir $(SERVICE_APP_DIR)
-	rsync --delete -arv $(APP_DIR)/. $(SERVICE_APP_DIR)
+	-mkdir -p $(SERVICE_APP_DIR)
+	rsync --exclude .git --delete -arv $(APP_DIR)/. $(SERVICE_APP_DIR)
 
 deploy-config: build-config
 	$(TPAGE) $(TPAGE_ARGS) $(CONFIG_TEMPLATE) > $(SERVICE_APP_DIR)/$(CONFIG)
@@ -147,15 +153,14 @@ build-config:
 	$(TPAGE) $(TPAGE_ARGS) $(CONFIG_TEMPLATE) > $(APP_DIR)/$(CONFIG)
 
 deploy-run-scripts:
-	mkdir -p $(TARGET)/services/$(SERVICE_DIR)
-	$(TPAGE) $(TPAGE_ARGS) service/start_service.tt > $(TARGET)/services/$(SERVICE_DIR)/start_service
-	chmod +x $(TARGET)/services/$(SERVICE_DIR)/start_service
-	$(TPAGE) $(TPAGE_ARGS) service/stop_service.tt > $(TARGET)/services/$(SERVICE_DIR)/stop_service
-	chmod +x $(TARGET)/services/$(SERVICE_DIR)/stop_service
-	if [ -f service/upstart.tt ] ; then \
-		$(TPAGE) $(TPAGE_ARGS) service/upstart.tt > service/$(SERVICE_NAME).conf; \
-	fi
-	echo "done executing deploy-service target"
+	for script in start_service stop_service postinstall; do \
+		$(TPAGE) $(TPAGE_ARGS) service/$$script.tt > $(TARGET)/services/$(SERVICE)/$$script ; \
+		chmod +x $(TARGET)/services/$(SERVICE)/$$script ; \
+	done
+	mkdir -p $(TARGET)/postinstall
+	rm -f $(TARGET)/postinstall/$(SERVICE)
+	ln -s ../services/$(SERVICE)/postinstall $(TARGET)/postinstall/$(SERVICE)
+
 
 deploy-upstart: deploy-service
 	-cp service/$(SERVICE_NAME).conf /etc/init/
