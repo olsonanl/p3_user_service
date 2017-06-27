@@ -51,7 +51,10 @@ P3_USER_SERVICE_URL = http://$(SERVICE_HOSTNAME):$(SERVICE_PORT)
 P3_HOME_URL = http://$(SERVICE_HOSTNAME):3000
 P3_USER_SIGNING_PRIVATE_PEM = $(shell pwd)/test-private-nokey.pem 
 P3_USER_SIGNING_PUBLIC_PEM = $(shell pwd)/test-public.pem 
+P3_USER_SIGNING_SUBJECT_URL = $(P3_USER_SERVICE_URL)/public_key
 P3_USER_REALM = patricbrc.org
+
+P3_CALLBACK_URL = $(P3_HOME_URL)/auth/callback
 
 COOKIE_SECRET = patric3
 COOKIE_KEY = patric3
