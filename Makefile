@@ -94,6 +94,8 @@ TPAGE_ARGS = --define kb_runas_user=$(SERVICE_USER) \
 	--define p3_user_service_url=$(P3_USER_SERVICE_URL) \
 	--define p3_user_signing_private_pem=$(P3_USER_SIGNING_PRIVATE_PEM) \
 	--define p3_user_signing_public_pem=$(P3_USER_SIGNING_PUBLIC_PEM) \
+	--define p3_user_signing_subject_url=$(P3_USER_SIGNING_SUBJECT_URL) \
+	--define p3_callback_url=$(P3_CALLBACK_URL) \
 	--define p3_user_realm=$(P3_USER_REALM) \
 	--define p3_home_url=$(P3_HOME_URL) \
 	--define redis_host=$(REDIS_HOST) \
@@ -184,7 +186,9 @@ deploy-run-scripts:
 	mkdir -p $(TARGET)/postinstall
 	rm -f $(TARGET)/postinstall/$(SERVICE_NAME)
 	ln -s ../services/$(SERVICE_NAME)/postinstall $(TARGET)/postinstall/$(SERVICE_NAME)
-
+	if [ -f service/monitrc.tt ] ; then
+		$(TPAGE) $(TPAGE_ARGS) service/monit.tt > $(TARGET)/services/$(SERVICE_NAME)/monitrc ; \
+	fi
 
 deploy-upstart: deploy-service
 	-cp service/$(SERVICE_NAME).conf /etc/init/

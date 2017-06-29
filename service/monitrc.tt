@@ -1,0 +1,9 @@
+[% SET service_dir = "$kb_top/services/$kb_service_name" -%]
+[% IF kb_service_log_dir -%]
+[% SET pidfile = "$kb_service_log_dir/service.pid" -%]
+[% ELSE -%]
+[% SET pidfile = "$service_dir/service.pid" -%]
+[% END -%]
+check process [% kb_service_name %] with pidfile [% pidfile %]
+  start program = [% service_dir %]/start_service 
+  stop program =  [% service_dir %]/stop_service 
