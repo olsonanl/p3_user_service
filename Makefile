@@ -187,7 +187,7 @@ deploy-run-scripts:
 	rm -f $(TARGET)/postinstall/$(SERVICE_NAME)
 	ln -s ../services/$(SERVICE_NAME)/postinstall $(TARGET)/postinstall/$(SERVICE_NAME)
 	if [ -f service/monitrc.tt ] ; then \
-		$(TPAGE) $(TPAGE_ARGS) service/monit.tt > $(TARGET)/services/$(SERVICE_NAME)/monitrc ; \
+		$(TPAGE) $(TPAGE_ARGS) service/monitrc.tt > $(TARGET)/services/$(SERVICE_NAME)/monitrc ; \
 		chmod go-rwx $(TARGET)/services/$(SERVICE_NAME)/monitrc ; \
 	fi
 
